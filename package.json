@@ -12,6 +12,10 @@
     "type": "git",
     "url": "git+https://github.com/aldojs/config.git"
   },
+  "files": [
+    "lib",
+    "index.d.ts"
+  ],
   "keywords": [
     "config",
     "settings"
