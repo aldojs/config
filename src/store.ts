@@ -30,12 +30,11 @@ export default class Config {
     while (keys.length > 1) {
       let field = keys.shift() as string
 
-      if (_isPlainObject(data[field])) {
-        data = data[field]
-        continue
+      if (!_isPlainObject(data[field])) {
+        return defaultValue
       }
 
-      return defaultValue
+      data = data[field]
     }
 
     return data[keys.shift() as string] || defaultValue
@@ -49,25 +48,7 @@ export default class Config {
    * @returns {Config}
    */
   public set (key: string, value: any): this {
-    var data = this._data
-    var keys = _ensure(key).split('.')
-
-    while (keys.length > 1) {
-      let field = keys.shift() as string
-
-      // If the key doesn't exist at this depth,
-      // we'll just create a plain object to hold the value
-      if (!_isPlainObject(data[field])) {
-        data[field] = {}
-      }
-
-      data = data[field]
-    }
-
-    // last field
-    data[keys.shift() as string] = value
-
-    return this
+    return this._set(key, value)
   }
 
   /**
@@ -100,7 +81,7 @@ export default class Config {
   public enabled (key: string): boolean {
     var value = this.get(key)
 
-    return (_isPlainObject(value) ? value.enabled : value) === true
+    return (_isPlainObject(value) ? value.enabled : value) == true
   }
 
   /**
@@ -120,9 +101,7 @@ export default class Config {
    * @returns {Boolean}
    */
   public disabled (key: string): boolean {
-    var value = this.get(key)
-
-    return (_isPlainObject(value) ? value.enabled : value) === false
+    return !this.enabled(key)
   }
 
   /**
@@ -151,7 +130,37 @@ export default class Config {
       key = `${key}.enabled`
     }
 
-    return this.set(key, false)
+    return this._set(key, false)
+  }
+
+  /**
+   * Set a setting value
+   * 
+   * @param {String} key
+   * @param {Any} value
+   * @returns {Config}
+   * @private
+   */
+  private _set (key: string, value: any) {
+    var data = this._data
+    var keys = _ensure(key).split('.')
+
+    while (keys.length > 1) {
+      let field = keys.shift() as string
+
+      // If the key doesn't exist at this depth,
+      // we'll just create a plain object to hold the value
+      if (!_isPlainObject(data[field])) {
+        data[field] = {}
+      }
+
+      data = data[field]
+    }
+
+    // last field
+    data[keys.shift() as string] = value
+
+    return this
   }
 }
 
