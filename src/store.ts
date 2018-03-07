@@ -3,7 +3,7 @@ import assert from 'assert'
 
 const { isArray } = Array
 
-declare type Literal = { [x: string]: any }
+type Literal = { [x: string]: any }
 
 export default class Config {
   /**
@@ -111,6 +111,7 @@ export default class Config {
    * @returns {Config}
    */
   public merge (values: Literal): this {
+    // TODO assert values is a plain object
     _merge(this._data, values)
     return this
   }
