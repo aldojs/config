@@ -1,27 +1,28 @@
 
-import assert from 'assert'
-
-const { isArray } = Array
+import * as assert from 'assert'
 
 type Literal = { [x: string]: any }
 
-export default class Config {
+/**
+ * Configuration store
+ */
+export default class {
+  private _data: Literal
+
   /**
-   * Create new config instance
+   * Initialize a new `Config` instance
    * 
-   * @param {Object} [_data]
-   * @constructor
+   * @param source
    */
-  constructor (private _data: Literal = {}) {
-  	// 
+  constructor (source: Literal = {}) {
+  	this._data = source
   }
 
   /**
-   * Get the setting value or `defaultValue` if not exist
+   * Get the `key` value or `defaultValue` if not exist
    * 
-   * @param {String} key
-   * @param {Any} [defaultValue]
-   * @returns {Any}
+   * @param key
+   * @param defaultValue
    */
   public get (key: string, defaultValue?: any): any {
     var data = this._data
@@ -43,9 +44,8 @@ export default class Config {
   /**
    * Set a setting value
    * 
-   * @param {String} key
-   * @param {Any} value
-   * @returns {Config}
+   * @param key
+   * @param value
    */
   public set (key: string, value: any): this {
     return this._set(key, value)
@@ -54,8 +54,7 @@ export default class Config {
   /**
    * Check if a setting is defined
    * 
-   * @param {String} key
-   * @returns {Boolean}
+   * @param key
    */
   public has (key: string): boolean {
     return this.get(key) != null
@@ -64,9 +63,7 @@ export default class Config {
   /**
    * Enable a setting
    * 
-   * @param {String} key
-   * @param {Any} value
-   * @returns {Config}
+   * @param key
    */
   public enable (key: string): this {
     return this._setEnabled(key, true)
@@ -75,8 +72,7 @@ export default class Config {
   /**
    * Check if a setting is enabled
    * 
-   * @param {String} key
-   * @returns {Boolean}
+   * @param key
    */
   public enabled (key: string): boolean {
     var value = this.get(key)
@@ -87,8 +83,7 @@ export default class Config {
   /**
    * Disable a setting
    * 
-   * @param {String} key
-   * @returns {Config}
+   * @param key
    */
   public disable (key: string): this {
     return this._setEnabled(key, false)
@@ -97,8 +92,7 @@ export default class Config {
   /**
    * Check if a setting is disabled
    * 
-   * @param {String} key
-   * @returns {Boolean}
+   * @param key
    */
   public disabled (key: string): boolean {
     return !this.enabled(key)
@@ -107,8 +101,7 @@ export default class Config {
   /**
    * Merge the settings with the new values
    * 
-   * @param {Object} values
-   * @returns {Config}
+   * @param values
    */
   public merge (values: Literal): this {
     // TODO assert values is a plain object
@@ -188,7 +181,7 @@ function _ensure (key: string) {
  * @private
  */
 function _isPlainObject (arg: any): boolean {
-  return arg && (Object.getPrototypeOf(arg) === null || Object === arg.constructor)
+  return arg && (Reflect.getPrototypeOf(arg) === null || Object === arg.constructor)
 }
 
 /**
@@ -203,7 +196,7 @@ function _merge (dest: Literal, source: Literal) {
     let value = source[field]
 
     // list
-    if (isArray(dest[field])) {
+    if (Array.isArray(dest[field])) {
       dest[field] = dest[field].concat(value)
       continue
     }
