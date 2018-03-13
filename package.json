@@ -1,8 +1,8 @@
 {
   "name": "aldo-config",
-  "version": "0.1.0-alpha",
+  "version": "0.1.0",
   "description": "Configuration service for Aldo applications",
-  "main": "lib/index.js",
+  "main": "index.js",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "tsc && npm test",
@@ -14,6 +14,7 @@
   },
   "files": [
     "lib",
+    "index.js",
     "index.d.ts"
   ],
   "keywords": [
