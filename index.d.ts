@@ -3,20 +3,24 @@
  * Configuration store
  */
 export default class Store {
+  /**
+   * Initialize a new Store instance
+   */
+  constructor (source: { [x: string]: any; });
 
   /**
    * Enable a setting
    * 
    * @param key
    */
-  enable(key: string): any;
+  enable(key: string): this;
 
   /**
    * Disable a setting
    * 
    * @param key
    */
-  disable(key: string): any;
+  disable(key: string): this;
 
   /**
    * Check if a setting is defined
@@ -76,5 +80,5 @@ export default class Store {
    * 
    * @param values
    */
-  merge(values: { [x: string]: any }): any;
+  merge(values: { [x: string]: any }): this;
 }
