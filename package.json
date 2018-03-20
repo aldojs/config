@@ -1,0 +1,37 @@
+{
+  "name": "aldo-config",
+  "version": "0.1.0",
+  "description": "Configuration service for Aldo applications",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc && npm test",
+    "test": "mocha -R dot -r ts-node/register \"test/**/*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aldojs/config.git"
+  },
+  "files": [
+    "lib",
+    "index.js",
+    "index.d.ts"
+  ],
+  "keywords": [
+    "config",
+    "settings"
+  ],
+  "author": "absolux",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aldojs/config/issues"
+  },
+  "homepage": "https://github.com/aldojs/config#readme",
+  "devDependencies": {
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^8.9.4",
+    "mocha": "^5.0.1",
+    "ts-node": "^5.0.1",
+    "typescript": "^2.7.2"
+  }
+}
