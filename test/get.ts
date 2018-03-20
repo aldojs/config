@@ -1,12 +1,12 @@
 
 import assert from 'assert'
-import { Config } from '../src'
-
-let config: any
+import Store from '../src/store'
 
 describe('config.get(key, defaultValue)', () => {
+  let config: any
+
   beforeEach(() => {
-    config = new Config()
+    config = new Store()
   })
 
   it('should return the value of the given key', () => {
@@ -17,7 +17,7 @@ describe('config.get(key, defaultValue)', () => {
 
   describe('when nested key', () => {
     it('should return the value as deep as needed', () => {
-      config = new Config({ a: { b: { c: true } } })
+      config = new Store({ a: { b: { c: true } } })
 
       assert.deepEqual(config.get('a.b'), { c: true })
       assert.equal(config.get('a.b.c'), true)

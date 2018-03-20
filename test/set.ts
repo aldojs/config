@@ -1,12 +1,12 @@
 
 import assert from 'assert'
-import { Config } from '../src'
-
-let config: any
+import Store from '../src/store'
 
 describe('config.set(key, value)', () => {
+  let config: any
+
   beforeEach(() => {
-    config = new Config()
+    config = new Store()
   })
 
   it('should set a simple entry', () => {

@@ -1,12 +1,12 @@
 
 import assert from 'assert'
-import { Config } from '../src'
-
-let config: any
+import Store from '../src/store'
 
 describe('config.merge(object)', () => {
+  let config: any
+  
   it('should merge settings', () => {
-    config = new Config({
+    config = new Store({
       a: true,
       b: {
         c: [ 123 ]
