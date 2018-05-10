@@ -1,21 +1,21 @@
 
 import assert from 'assert'
 
-type Literal = { [x: string]: any }
+export type Literal = { [x: string]: any }
 
-/**
- * Configuration store
- */
-export default class {
-  private _data: Literal
+export default class ConfigStore {
+  /**
+   * The store data
+   */
+  private _map: Literal = {}
 
   /**
    * Initialize a new `Config` instance
    * 
    * @param source
    */
-  constructor (source: Literal = {}) {
-  	this._data = source
+  public constructor (source: Literal = {}) {
+  	this.merge(source)
   }
 
   /**
@@ -25,7 +25,7 @@ export default class {
    * @param defaultValue
    */
   public get (key: string, defaultValue?: any): any {
-    var data = this._data
+    var data = this._map
     var keys = _ensure(key).split('.')
 
     while (keys.length > 1) {
@@ -104,17 +104,16 @@ export default class {
    * @param values
    */
   public merge (values: Literal): this {
-    // TODO assert values is a plain object
-    _merge(this._data, values)
+    assert(_isPlainObject(values), `Expect a plain object but got ${typeof values}`)
+    _merge(this._map, values)
     return this
   }
 
   /**
+   * Set a setting flag
    * 
-   * 
-   * @param {String} key
-   * @param {Boolean} value
-   * @returns {Config}
+   * @param key
+   * @param value
    * @private
    */
   private _setEnabled (key: string, value: boolean): this {
@@ -130,13 +129,12 @@ export default class {
   /**
    * Set a setting value
    * 
-   * @param {String} key
-   * @param {Any} value
-   * @returns {Config}
+   * @param key
+   * @param value
    * @private
    */
-  private _set (key: string, value: any) {
-    var data = this._data
+  private _set (key: string, value: any): this {
+    var data = this._map
     var keys = _ensure(key).split('.')
 
     while (keys.length > 1) {
@@ -161,53 +159,51 @@ export default class {
 /**
  * Ensure the configuration key is valid
  * 
- * @param {String} key
- * @returns {String}
- * @throws {AssertionError}
+ * @param key
+ * @throws `AssertionError` when the `key` is invalid
  * @private
  */
-function _ensure (key: string) {
+function _ensure (key: string): string {
   assert(typeof key === 'string', 'The key must be a string')
   assert(key !== '', 'The key should not be empty')
-  
+
   return key
 }
 
 /**
  * Check if the given value is a plain object
  * 
- * @param {Any} arg
- * @returns {Boolean}
+ * @param obj
  * @private
  */
-function _isPlainObject (arg: any): boolean {
-  return arg && (Reflect.getPrototypeOf(arg) === null || Object === arg.constructor)
+function _isPlainObject (obj: any): boolean {
+  return obj && (Reflect.getPrototypeOf(obj) === null || Object === obj.constructor)
 }
 
 /**
  * Merge two objects
  * 
- * @param {Object} dest
- * @param {Object} source
+ * @param one
+ * @param two
  * @private
  */
-function _merge (dest: Literal, source: Literal) {
-  for (let field in source) {
-    let value = source[field]
+function _merge (one: Literal, two: Literal): void {
+  for (let field in two) {
+    let value = two[field]
 
     // list
-    if (Array.isArray(dest[field])) {
-      dest[field] = dest[field].concat(value)
+    if (Array.isArray(one[field])) {
+      one[field] = one[field].concat(value)
       continue
     }
 
     // map
-    if (_isPlainObject(value) && _isPlainObject(dest[field])) {
-      _merge(dest[field], value)
+    if (_isPlainObject(value) && _isPlainObject(one[field])) {
+      _merge(one[field], value)
       continue
     }
 
     // otherwise
-    dest[field] = value
+    one[field] = value
   }
 }
