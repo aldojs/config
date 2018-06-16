@@ -80,7 +80,11 @@ export class Store {
   public enabled (key: string): boolean {
     let value = this._get(key)
 
-    return (is.plainObject(value) ? value['enabled'] : value) == true
+    if (is.plainObject(value) && 'enabled' in value) {
+      return is.truthy(value['enabled'])
+    }
+
+    return is.truthy(value)
   }
 
   /**
@@ -141,7 +145,7 @@ export class Store {
    * @private
    */
   private _set (key: string, value: any): this {
-    let data = this._map
+    let map = this._map
     let keys = key.split('.')
 
     while (keys.length > 1) {
@@ -149,12 +153,12 @@ export class Store {
 
       // if the key doesn't exist at this depth,
       // we'll just create a plain object to hold the value
-      if (!is.plainObject(data[field])) data[field] = {}
+      if (!is.plainObject(map[field])) map[field] = {}
 
-      data = data[field]
+      map = map[field]
     }
 
-    data[keys[0]] = value
+    map[keys[0]] = value
 
     return this
   }
@@ -172,7 +176,7 @@ export class Store {
     while (keys.length > 1) {
       let field = keys.shift() as string
 
-      // we won't go that deep if the field is not an object
+      // we won't go deeper if the field is not an object
       if (!is.plainObject(map[field])) return
 
       map = map[field]
